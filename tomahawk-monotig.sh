@@ -1,11 +1,7 @@
 #!/bin/bash
 
-time zcat pmulti.vcf.gz \
-    | vt normalize -q -m -n -r ~/graphs/diatom/assemblies/uPseMul2.contigs.fasta - \
-    | vcffilter -f 'QUAL > 1' \
-    | ./order-vcf.py monotig.mapping.txt monotig \
-    | vcf-sort -c \
-    | bgziptabix pmulti.monotig.Q1.norm.vcf.gz
+
+cat ~/graphs/diatom/assemblies/uPseMul2.contigs.fasta.fai | cut -f 1 | parallel -k -j 28 'tabix -h pmulti.vcf.gz {} | bcftools filter -i "QUAL > 1" | vcfallelicprimitives | python3 order-vcf.py monotig.mapping.txt monotig ~/graphs/diatom/assemblies/uPseMul2.contigs.fasta' | vcffirstheader | vcf-sort -c | bgziptabix pmulti.monotig.Q1.norm.vcf.gz
 time bcftools view -Ob pmulti.monotig.Q1.norm.vcf.gz >pmulti.monotig.Q1.norm.bcf
 time tomahawk import -i pmulti.Q1.norm.bcf -o pmulti.Q1.norm -n 1.0 
 time tomahawk calc -pdi pmulti.monotig.Q1.norm.twk -o pmulti.monotig.Q1.norm.calc -a 0 -r 0.1 -P 0.1 -t 28

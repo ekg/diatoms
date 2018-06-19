@@ -4,14 +4,19 @@ import sys
 
 mapping_file=sys.argv[1]
 monotig_name=sys.argv[2]
+fasta_file=sys.argv[3]
 
 d = {}
-monotig_length = 0
-with open(sys.argv[1]) as f:
+with open(mapping_file) as f:
     for line in f:
         (key, val) = line.split()
         d[key] = int(val)
-        monotig_length += int(val)
+
+monotig_length = 0
+with open(fasta_file+".fai") as f:
+    for line in f:
+        (name, length, s, ll, lb) = line.split()
+        monotig_length += int(length)
 
 for line in sys.stdin:
     if line.startswith('##'): print(line.strip())

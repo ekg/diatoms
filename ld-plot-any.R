@@ -18,9 +18,9 @@ plotLDRegion<-function(dataSource, from, to, upper = FALSE, lower = FALSE, add =
   b$R2[b$R2>1]<-1 # In cases of rounding error
   b<-b[order(b$R2,decreasing = F),] # sort for Z-stack
   if(add == TRUE){
-    points(b$POS_A,b$POS_B,pch=20,cex=1,col=colors[cut(b$R2,breaks=seq(0,1,length.out = 11),include.lowest = T)], ...)
+    points(b$POS_A,b$POS_B,pch=20,cex=0.2,col=colors[cut(b$R2,breaks=seq(0,1,length.out = 11),include.lowest = T)], ...)
   } else {
-    plot(b$POS_A,b$POS_B,pch=20,cex=1,col=colors[cut(b$R2,breaks=seq(0,1,length.out = 11),include.lowest = T)],xlim=c(from,to),ylim=c(from,to),xaxs="i",yaxs="i", ...)
+    plot(b$POS_A,b$POS_B,pch=20,cex=0.2,col=colors[cut(b$R2,breaks=seq(0,1,length.out = 11),include.lowest = T)],xlim=c(from,to),ylim=c(from,to),xaxs="i",yaxs="i", ...)
     abline(0,1,lwd=2,col="grey")
   }
 }
@@ -30,7 +30,7 @@ plotLDRegionTriangular<-function(dataSource, from, to, ...){
   b<-dataSource[dataSource$POS_A>=from & dataSource$POS_A<=to & dataSource$POS_B>=from & dataSource$POS_B<=to,]
   b<-b[b$POS_A<b$POS_B,] # upper triangular only
   b<-b[order(b$R2,decreasing = F),] # sort for Z-stack
-  plot(b$POS_A + ((b$POS_B-b$POS_A)/2),b$POS_B-b$POS_A,pch=20,cex=1,col=colors[cut(b$R2,breaks=seq(0,1,length.out = 11),include.lowest = T)],xlim=c(from,to),ylim=c(from,to), ...)
+  plot(b$POS_A + ((b$POS_B-b$POS_A)/2),b$POS_B-b$POS_A,pch=20,cex=0.2,col=colors[cut(b$R2,breaks=seq(0,1,length.out = 11),include.lowest = T)],xlim=c(from,to),ylim=c(from,to), ...)
 }
 
 # Load some LD data from Tomahawk
@@ -42,6 +42,15 @@ ld<-fread(commandArgs(TRUE)[1],skip="FLAG") # First line starts with the pattern
 
 par(mfrow=c(1,3))
 pdf(commandArgs(TRUE)[2], height=5.5, width=8)
-plotLDRegionTriangular(ld,0,max(ld$POS_B),main=commandArgs(TRUE)[1])
+plotLDRegionTriangular(ld,min(ld$POS_A),max(ld$POS_B),main=commandArgs(TRUE)[1])
+abline(v=35569897+194021, col="red")
+abline(v=35188158)
+abline(v=35268602)
+abline(v=35323236)
+abline(v=35569897)
+abline(v=36439005)
+abline(v=36482130)
+abline(v=36715183)
+abline(v=37759303)
 dev.off()
 
