@@ -1,0 +1,3 @@
+[submodule "neighborly-tour"]
+	path = neighborly-tour
+	url = https://github.com/ekg/neighborly-tour.git
